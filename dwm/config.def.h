@@ -79,9 +79,9 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "st", NULL };
 
 /* Custom commands */
-static const char *desktopcmd[] = { "dmenu_desktop"};
-static const char *lockscreencmd[] = { "betterlockscreen", "-l" };
-static const char *gitpatcmd[] = { "gitpat" };
+static const char *desktopcmd[] = { "dmenu_desktop", "-i", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *lockscreencmd[] = { "betterlockscreen", "-l", NULL };
+static const char *gitpatcmd[] = { "gitpat", NULL };
 
 #include "shiftview.c"
 static Key keys[] = {
