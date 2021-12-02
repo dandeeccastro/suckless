@@ -37,7 +37,7 @@
 #define LENGTH(x)               (sizeof(x) / sizeof(x[0]))
 #define CLEANMASK(mask)         (mask & (MODKEY|GDK_SHIFT_MASK))
 
-enum { AtomFind, AtomGo, AtomUri, AtomUTF8, AtomLast };
+enum { AtomFind, AtomGo, AtomUri, AtomLast };
 
 enum {
 	OnDoc   = WEBKIT_HIT_TEST_RESULT_CONTEXT_DOCUMENT,
@@ -240,7 +240,7 @@ static void clicknewwindow(Client *c, const Arg *a, WebKitHitTestResult *h);
 static void clickexternplayer(Client *c, const Arg *a, WebKitHitTestResult *h);
 
 static char winid[64];
-static char togglestats[11];
+static char togglestats[12];
 static char pagestats[2];
 static Atom atoms[AtomLast];
 static Window embed;
@@ -339,7 +339,6 @@ setup(void)
 	atoms[AtomFind] = XInternAtom(dpy, "_SURF_FIND", False);
 	atoms[AtomGo] = XInternAtom(dpy, "_SURF_GO", False);
 	atoms[AtomUri] = XInternAtom(dpy, "_SURF_URI", False);
-	atoms[AtomUTF8] = XInternAtom(dpy, "UTF8_STRING", False);
 
 	gtk_init(NULL, NULL);
 
@@ -609,7 +608,7 @@ void
 setatom(Client *c, int a, const char *v)
 {
 	XChangeProperty(dpy, c->xid,
-	                atoms[a], atoms[AtomUTF8], 8, PropModeReplace,
+	                atoms[a], XA_STRING, 8, PropModeReplace,
 	                (unsigned char *)v, strlen(v) + 1);
 	XSync(dpy, False);
 }
@@ -624,8 +623,7 @@ getatom(Client *c, int a)
 	unsigned char *p = NULL;
 
 	XSync(dpy, False);
-	XGetWindowProperty(dpy, c->xid,
-	                   atoms[a], 0L, BUFSIZ, False, atoms[AtomUTF8],
+	XGetWindowProperty(dpy, c->xid, atoms[a], 0L, BUFSIZ, False, XA_STRING,
 	                   &adummy, &idummy, &ldummy, &ldummy, &p);
 	if (p)
 		strncpy(buf, (char *)p, LENGTH(buf) - 1);
@@ -670,10 +668,11 @@ gettogglestats(Client *c)
 	togglestats[3] = curconfig[DiskCache].val.i ?       'D' : 'd';
 	togglestats[4] = curconfig[LoadImages].val.i ?      'I' : 'i';
 	togglestats[5] = curconfig[JavaScript].val.i ?      'S' : 's';
-	togglestats[6] = curconfig[Style].val.i ?           'M' : 'm';
-	togglestats[7] = curconfig[FrameFlattening].val.i ? 'F' : 'f';
-	togglestats[8] = curconfig[Certificate].val.i ?     'X' : 'x';
-	togglestats[9] = curconfig[StrictTLS].val.i ?       'T' : 't';
+	togglestats[7] = curconfig[Style].val.i ?           'M' : 'm';
+	togglestats[8] = curconfig[FrameFlattening].val.i ? 'F' : 'f';
+	togglestats[9] = curconfig[Certificate].val.i ?     'X' : 'x';
+	togglestats[10] = curconfig[StrictTLS].val.i ?      'T' : 't';
+	togglestats[11] = '\0';
 }
 
 void
@@ -845,7 +844,7 @@ setparameter(Client *c, int refresh, ParamName p, const Arg *a)
 	case SpellLanguages:
 		return; /* do nothing */
 	case StrictTLS:
-		webkit_web_context_set_tls_errors_policy(
+		webkit_website_data_manager_set_tls_errors_policy(
 		    webkit_web_view_get_context(c->view), a->i ?
 		    WEBKIT_TLS_ERRORS_POLICY_FAIL :
 		    WEBKIT_TLS_ERRORS_POLICY_IGNORE);
@@ -1155,7 +1154,7 @@ newview(Client *c, WebKitWebView *rv)
 		webkit_web_context_set_process_model(context,
 		    WEBKIT_PROCESS_MODEL_MULTIPLE_SECONDARY_PROCESSES);
 		/* TLS */
-		webkit_web_context_set_tls_errors_policy(context,
+		webkit_website_data_manager_set_tls_errors_policy(context,
 		    curconfig[StrictTLS].val.i ? WEBKIT_TLS_ERRORS_POLICY_FAIL :
 		    WEBKIT_TLS_ERRORS_POLICY_IGNORE);
 		/* disk cache */
