@@ -82,7 +82,7 @@ static const char *termcmd[]  = { "st", NULL };
 
 /* Custom commands */
 static const char *desktopcmd[] = { "dmenu_desktop", "-i", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
-static const char *lockscreencmd[] = { "betterlockscreen", "-l", NULL };
+static const char *lockscreencmd[] = { "slock",  NULL };
 static const char *gitpatcmd[] = { "gitpat", NULL };
 
 /*
