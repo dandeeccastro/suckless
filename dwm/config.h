@@ -37,10 +37,10 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     			NULL,       NULL,      0,            1,           -1 },
-	// Browsers opening on second workspace 
+	
 	{ "LibreWolf",  		NULL,       NULL,      1 << 1,       0,           -1 },
 	{ "Chromium",  			NULL,       NULL,      1 << 1,       0,           -1 },
-	// Chat stuff on last workspace 
+	
 	{ "TelegramDesktop",  	NULL,       NULL,      1 << 8,       0,           -1 },
 	{ "web.whatsapp.com",  	NULL,       NULL,      1 << 8,       0,           -1 },
 	{ "discord",  			NULL,       NULL,      1 << 8,       0,           -1 },
@@ -62,6 +62,8 @@ static const Layout layouts[] = {
 	{ "|+|",      tatami },
  	{ "[@]",      spiral },
  	{ "[\\]",      dwindle },
+	{ "|M|",      centeredmaster },
+	{ ">M>",      centeredfloatingmaster },
 };
 
 /* key definitions */
@@ -74,6 +76,8 @@ static const Layout layouts[] = {
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+
+#define STATUSBAR "dwmblocks"
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
@@ -129,6 +133,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[4]} },
 	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[5]} },
+	{ MODKEY,                       XK_u,      setlayout,      {.v = &layouts[6]} },
+	{ MODKEY,                       XK_o,      setlayout,      {.v = &layouts[7]} },
 	{ MODKEY,                       XK_p,      setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_p,      togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
@@ -164,7 +170,10 @@ static Button buttons[] = {
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
-	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
+	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
+	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
+	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
+	{ ClkStatusText,        ShiftMask,      Button1,        sigstatusbar,   {.i = 4} },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
