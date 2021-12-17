@@ -1,15 +1,15 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static unsigned int borderpx  = 2;        /* border pixel of windows */
+static unsigned int borderpx  			= 2;        /* border pixel of windows */
 static const int startwithgaps[]    = { 1 };	/* 1 means gaps are used by default, this can be customized for each tag */
 static const unsigned int gappx[]   = { 10 };   /* default gap between windows in pixels, this can be customized for each tag */
-static unsigned int snap      = 32;       /* snap pixel */
-static int showbar            = 1;        /* 0 means no bar */
-static int topbar             = 1;        /* 0 means bottom bar */
-static char font[]          = "Iosevka:size=10";
-static char dmenufont[]       = "Iosevka:size=10";
-static const char *fonts[]          = { font, "fontawesome:size=12" };
+static unsigned int snap      			= 32;       /* snap pixel */
+static int showbar            			= 1;        /* 0 means no bar */
+static int topbar             			= 1;        /* 0 means bottom bar */
+static char font[]          				= "monospace:size=10";
+static char dmenufont[]       			= "monospace:size=10";
+static const char *fonts[]          = { font };
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
@@ -64,6 +64,9 @@ static const Layout layouts[] = {
  	{ "[\\]",      dwindle },
 	{ "|M|",      centeredmaster },
 	{ ">M>",      centeredfloatingmaster },
+	{ "[D]",      deck },
+	{ "TTT",      bstack },
+	{ "===",      bstackhoriz },
 };
 
 /* key definitions */
@@ -81,13 +84,12 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-i", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 /* Custom commands */
 static const char *desktopcmd[] = { "dmenu_desktop", "-i", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *lockscreencmd[] = { "slock",  NULL };
-static const char *gitpatcmd[] = { "gitpat", NULL };
 
 /*
  * Xresources preferences to load at startup
@@ -95,12 +97,14 @@ static const char *gitpatcmd[] = { "gitpat", NULL };
 ResourcePref resources[] = {
 		{ "font",               STRING,  &font },
 		{ "dmenufont",          STRING,  &dmenufont },
+
 		{ "normbgcolor",        STRING,  &normbgcolor },
 		{ "normbordercolor",    STRING,  &normbordercolor },
 		{ "normfgcolor",        STRING,  &normfgcolor },
 		{ "selbgcolor",         STRING,  &selbgcolor },
 		{ "selbordercolor",     STRING,  &selbordercolor },
 		{ "selfgcolor",         STRING,  &selfgcolor },
+
 		{ "borderpx",          	INTEGER, &borderpx },
 		{ "snap",          		INTEGER, &snap },
 		{ "showbar",          	INTEGER, &showbar },
@@ -135,6 +139,9 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[5]} },
 	{ MODKEY,                       XK_u,      setlayout,      {.v = &layouts[6]} },
 	{ MODKEY,                       XK_o,      setlayout,      {.v = &layouts[7]} },
+	{ MODKEY|ControlMask,           XK_r,      setlayout,      {.v = &layouts[8]} },
+	{ MODKEY|ShiftMask,             XK_u,      setlayout,      {.v = &layouts[9]} },
+	{ MODKEY|ShiftMask,             XK_o,      setlayout,      {.v = &layouts[10]} },
 	{ MODKEY,                       XK_p,      setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_p,      togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
@@ -160,7 +167,6 @@ static Key keys[] = {
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 	{ MODKEY,                       XK_x,      spawn,          {.v = lockscreencmd } },
-	{ MODKEY|ShiftMask,                       XK_g,      spawn,          {.v = gitpatcmd } },
 };
 
 /* button definitions */
