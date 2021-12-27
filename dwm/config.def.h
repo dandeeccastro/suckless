@@ -28,8 +28,6 @@ static const char *const autostart[] = {
 	"dunst", NULL,
 	"picom", NULL,
 	"dwmblocks", NULL,
-	"redshift", "-l", "geoclue", "-t", "6500:5000", "-b", "1.0:0.8", NULL,
-	"feh", "--bg-fill", "-z" ,"/home/dundee/Imagens/wallpapers/", NULL, 
 	NULL /* terminate */
 };
 
